@@ -46,7 +46,7 @@ function subtractHexes(hexA, hexB){
 function multiplyHex(hex, multiplier){
     return new HexCubeC(hex.q * multiplier, hex.r * multiplier, hex.s * multiplier)
 }
-
+//Represents the distance of a hexagon from the center (or the origin) of the grid.
 function hexLength(hex) {
     return Math.floor((Math.abs(hex.q) + Math.abs(hex.r) + Math.abs(hex.s)) / 2);
 }
