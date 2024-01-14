@@ -30,6 +30,14 @@ class HexAxialC {
         return -this.q_ - this.r_;
     }
 }
+const possibleHexDirections = [
+    new HexCubeC(1, 0, -1),
+    new HexCubeC(1, -1, 0),
+    new HexCubeC(0, -1, 1),
+    new HexCubeC(-1, 0, 1),
+    new HexCubeC(-1, 1, 0),
+    new HexCubeC(0, 1, -1)
+  ];
 //Boolean check for if hexes are equal
 function areHexesEqual(hexA, hexB) {
     return hexA.q === hexB.q && hexA.r === hexB.r && hexA.s === hexB.s;
@@ -53,4 +61,20 @@ function hexLength(hex) {
 //Measures the distance between two hexagons (cube coords)
 function hexDistance(hexA, hexB){
     return hexLength(subtractHexes(hexA, hexB));
+}
+/*hexDirection but can take any input as it gets wrapped to the range, below or above 0-6.
+ function hexDirection(direction) {
+     const directionWrapped = (6 + (direction % 6)) % 6;
+     return possibleHexDirections[directionWrapped];
+}*/
+//Retrieves a hexagonal direction based on the specified index.
+function hexDirection(direction) {
+    if (direction < 0 || direction >= 6) {
+      throw new Error("Invalid direction. Direction should be in the range of 0 to 5.");
+    }
+    return possibleHexDirections[direction];
+}
+//Calculates a neighbor hexagons coords in the specified direction from the given hexagon.
+function hexNeighbour(hex, direction){
+    return addHexes(hex, hexDirection(direction))
 }
