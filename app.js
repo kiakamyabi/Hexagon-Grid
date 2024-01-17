@@ -106,11 +106,11 @@ function hexDistance(hexA, hexB){
 }
 
 /**
- * Retrieves the hexagonal cube coordinates representing a specific direction in a hexagonal grid.
+ * Retrieves cube coordinates representing a specific direction in a hexagonal grid.
  * 
  * @param {number} direction An integer representing the direction by indexing object holding possible directions in coordinates
  * (0 to 5) in the hexagonal grid.
- * @returns {HexCubeC} The hexagonal cube coordinates corresponding to the specified direction.
+ * @returns {HexCubeC} The cube coordinates corresponding to the specified direction.
  * @throws {Error} Throws an error if the provided direction is outside the valid range (0 to 5).
  */
 function hexDirection(direction) {
@@ -144,7 +144,8 @@ function hexNeighbour(hex, direction){
  * @param {number} b1 Backward matrix element.
  * @param {number} b2 Backward matrix element.
  * @param {number} b3 Backward matrix element.
- * @param {number} startAngle The start angle for the orientation.
+ * @param {number} startAngle Represents the initial rotational angle of the hexagon. It is specified in multiples
+ *  of 60 degrees, indicating how the hexagon is initially rotated within the hexagonal grid.
  */
 class Orientation {
     constructor(f0, f1, f2, f3, b0, b1, b2, b3, startAngle) {
@@ -164,8 +165,8 @@ class Orientation {
  * @class
  * @classdesc Defines a point with coordinates (x, y) in a two-dimensional space.
  *
- * @param {number} x - The x-coordinate of the point.
- * @param {number} y - The y-coordinate of the point.
+ * @param {number} x The x-coordinate of the point.
+ * @param {number} y The y-coordinate of the point.
  */
 class Point {
     constructor(x, y) {
@@ -175,8 +176,6 @@ class Point {
 }
 
 /**
- * Represents an orientation for a pointy-topped hexagon layout in a hexagonal grid.
- *
  * @const {Orientation}
  * @description Represents an orientation for a pointy-topped hexagon layout, with specific matrix elements and a start angle.
  */
@@ -187,8 +186,6 @@ const pointyLayout = new Orientation(
 );
 
 /**
- * Represents an orientation for a flat-topped hexagon layout in a hexagonal grid.
- *
  * @const {Orientation}
  * @description Represents an orientation for a flat-topped hexagon layout, with specific matrix elements and a start angle.
  */
@@ -200,16 +197,73 @@ const flatLayout = new Orientation(
 
 /**
  * @class
- * @classdesc This class defines a layout (basically a shape) with specific orientation, size, and origin.
+ * @classdesc Defines a layout by aggregating a Orientation object and two Point objects.
  * 
- * @param {Orientation} orientation - The orientation of the layout.
- * @param {Point} size - The size of the layout.
- * @param {Point} origin - The origin of the layout.
+ * @param {Orientation} orientation - Orientation object with the orientation of the layout.
+ * @param {Point} size - Point object with the size of the layout.
+ * @param {Point} origin - Point object with the origin of the layout.
  */
 class Layout {
     constructor(orientation, size, origin) {
         this.orientation = orientation;
         this.size = size;
         this.origin = origin;
+    }
+}
+
+/**
+ * Converts cube coordinates to pixel coordinates.
+ *
+ * @param {Layout} layout Layout object containing orientation (Orientation class), size (Point class), and origin (Point class).
+ * @param {HexCubeC} hex Hex object specifying which hexagon's pixel coordinates are being calculated from cube coordinates (q, r, s). 
+ * @returns {Point} Point object with the pixel coordinates.
+ */
+function hexToPixel(layout, hex) {
+    const matrix = layout.orientation;
+    const x = (matrix.f0 * hex.q + matrix.f1 * hex.r) * layout.size.x;
+    const y = (matrix.f2 * hex.q + matrix.f3 * hex.r) * layout.size.y;
+    return new Point(x + layout.origin.x, y + layout.origin.y);
+}
+
+/**
+ * Converts pixel coordinates to cube coordinates.
+ *
+ * @param {Layout} layout Layout object containing orientation (Orientation class), size (Point class), and origin (Point class).
+ * @param {Point} point Point object with the pixel coordinates.
+ * @returns {HexCubeC} - Hex object with cube coordinates, likely resulting in fractional cube coordinates.
+ */
+function pixelToHex(layout, point) {
+    const matrix = layout.orientation;
+    const pt = {
+        x: (point.x - layout.origin.x) / layout.size.x,
+        y: (point.y - layout.origin.y) / layout.size.y
+    };
+    const q = matrix.b0 * pt.x + matrix.b1 * pt.y;
+    const r = matrix.b2 * pt.x + matrix.b3 * pt.y;
+    const s = -q - r;
+    return new HexCubeC(q, r, s);
+}
+
+/**
+ * Rounds fractional cube coordinates to the nearest whole cube coordinates.
+ * 
+ * @param {HexCubeC} hex - Hex object representing cube coordinates with fractional values.
+ * @returns {HexCubeC} - Hex object with rounded cube coordinates.
+ */
+function roundHex(hex) {
+    const q = Math.round(hex.q);
+    const r = Math.round(hex.r);
+    const s = Math.round(hex.s);
+
+    const qDiff = Math.abs(q - hex.q);
+    const rDiff = Math.abs(r - hex.r);
+    const sDiff = Math.abs(s - hex.s);
+
+    if (qDiff > rDiff && qDiff > sDiff) {
+        return new HexCubeC(-r - s, r, s);
+    } else if (rDiff > sDiff) {
+        return new HexCubeC(q, -q - s, s);
+    } else {
+        return new HexCubeC(q, r, -q - r);
     }
 }
