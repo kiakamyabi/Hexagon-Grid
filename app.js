@@ -96,6 +96,7 @@ function hexLength(hex) {
 /**
  * Calculates and returns the hexagonal distance between two hexagons (coordinates from two Hex objects) in the grid.
  * 
+ * @function
  * @param {HexCubeC} hexA The first Hex object.
  * @param {HexCubeC} hexB The second Hex object.
  * @returns {number} The hexagonal distance between the two hexagons, representing the number of hexagonal steps
@@ -108,6 +109,7 @@ function hexDistance(hexA, hexB){
 /**
  * Retrieves cube coordinates representing a specific direction in a hexagonal grid.
  * 
+ * @function
  * @param {number} direction An integer representing the direction by indexing object holding possible directions in coordinates
  * (0 to 5) in the hexagonal grid.
  * @returns {HexCubeC} The cube coordinates corresponding to the specified direction.
@@ -123,6 +125,7 @@ function hexDirection(direction) {
 /**
  * Calculates and returns the hexagon neighboring a given hexagon in the specified direction.
  * 
+ * @function
  * @param {HexCubeC} hex The Hex object from which to find the neighboring hexagon.
  * @param {number} direction An integer representing the direction by indexing object holding possible directions in coordinates
  * (0 to 5) in the hexagonal grid.
@@ -199,9 +202,9 @@ const flatLayout = new Orientation(
  * @class
  * @classdesc Defines a layout by aggregating a Orientation object and two Point objects.
  * 
- * @param {Orientation} orientation - Orientation object with the orientation of the layout.
- * @param {Point} size - Point object with the size of the layout.
- * @param {Point} origin - Point object with the origin of the layout.
+ * @param {Orientation} orientation Orientation object with the orientation of the layout.
+ * @param {Point} size Point object with the size of the layout.
+ * @param {Point} origin Point object with the origin of the layout.
  */
 class Layout {
     constructor(orientation, size, origin) {
@@ -214,6 +217,7 @@ class Layout {
 /**
  * Converts cube coordinates to pixel coordinates.
  *
+ * @function
  * @param {Layout} layout Layout object containing orientation (Orientation class), size (Point class), and origin (Point class).
  * @param {HexCubeC} hex Hex object specifying which hexagon's pixel coordinates are being calculated from cube coordinates (q, r, s). 
  * @returns {Point} Point object with the pixel coordinates.
@@ -228,9 +232,10 @@ function hexToPixel(layout, hex) {
 /**
  * Converts pixel coordinates to cube coordinates.
  *
+ * @function
  * @param {Layout} layout Layout object containing orientation (Orientation class), size (Point class), and origin (Point class).
  * @param {Point} point Point object with the pixel coordinates.
- * @returns {HexCubeC} - Hex object with cube coordinates, likely resulting in fractional cube coordinates.
+ * @returns {HexCubeC} Hex object with cube coordinates, likely resulting in fractional cube coordinates.
  */
 function pixelToHex(layout, point) {
     const matrix = layout.orientation;
@@ -247,8 +252,9 @@ function pixelToHex(layout, point) {
 /**
  * Rounds fractional cube coordinates to the nearest whole cube coordinates.
  * 
- * @param {HexCubeC} hex - Hex object representing cube coordinates with fractional values.
- * @returns {HexCubeC} - Hex object with rounded cube coordinates.
+ * @function
+ * @param {HexCubeC} hex Hex object representing cube coordinates with fractional values.
+ * @returns {HexCubeC} Hex object with rounded cube coordinates.
  */
 function roundHex(hex) {
     const q = Math.round(hex.q);
@@ -266,4 +272,41 @@ function roundHex(hex) {
     } else {
         return new HexCubeC(q, r, -q - r);
     }
+}
+
+/**
+ * Calculates the offset in x and y coordinates, of a hexagon corner based on the layout (size, start angle) and corner index.
+ *
+ * @function
+ * @param {Layout} layout Layout object containing the size and orientation data.
+ * @param {number} corner The index (six points) of the corner of a hexagon to calculate the offset.
+ * @returns {Point} The coordinates of the corner offset as a Point object.
+ */
+function hexCornerOffset(layout, corner) {
+    if (corner < 0 || corner >= 6) {
+        throw new Error("Invalid corner number. Corner should be in the range of 0 to 5 (Indexed, representing six points of a hexagon).");
+    }
+    const size = layout.size;
+    const startAngle = layout.orientation.startAngle;
+    const angle = 2.0 * Math.PI * (startAngle + corner) / 6;
+    return new Point(size.x * Math.cos(angle), size.y * Math.sin(angle));
+}
+
+/**
+ * Calculates the corner points of a hexagon in pixel coordinates.
+ *
+ * @param {Layout} layout Layout object containing size, origin and orientation data.
+ * @param {HexCubeC} hex Hex object for which to calculate the corners.
+ * @returns {Array<Point>} Array of Point objects, containing points of corners in a polygon in pixel coordinates as x & y.
+ */
+function polygonCorners(layout, hex) {
+    const corners = [];
+    const center = hexToPixel(layout, hex);
+
+    for (let i = 0; i < 6; i++) {
+        const offset = hexCornerOffset(layout, i);
+        const corner = new Point(center.x + offset.x, center.y + offset.y);
+        corners.push(corner);
+    }
+    return corners;
 }
