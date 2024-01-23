@@ -1,0 +1,51 @@
+.distance-0 {
+    fill: white;
+}
+
+.distance-1 {
+    fill: #ff0000; /* Red */
+}
+
+.distance-2 {
+    fill: #ff7f00; /* Orange */
+}
+
+.distance-3 {
+    fill: #ffff00; /* Yellow */
+}
+
+.distance-4 {
+    fill: #00ff00; /* Green */
+}
+
+.distance-5 {
+    fill: #0000ff; /* Blue */
+}
+
+.distance-6 {
+    fill: #8b00ff; /* Indigo */
+}
+
+.distance-1:hover {
+    fill: #990000; /* Darker red */
+}
+
+.distance-2:hover {
+    fill: #994c00; /* Darker orange */
+}
+
+.distance-3:hover {
+    fill: #808000; /* Darker yellow */
+}
+
+.distance-4:hover {
+    fill: #004d00; /* Darker green */
+}
+
+.distance-5:hover {
+    fill: #000080; /* Darker blue */
+}
+
+.distance-6:hover {
+    fill: #660066; /* Darker indigo */
+}

@@ -15,10 +15,10 @@ class HexCubeC{
         this.s = s;
         if (q + r + s !== 0){
             throw new Error("Invalid Cube Coordinates: q + r + s must equal 0.")
-
         }
     }
 }
+
 
 /**
  * Six Hex objects representing six possible directions on a hexagon grid with cube coordinates.
@@ -182,7 +182,7 @@ class Point {
  * @const {Orientation}
  * @description Represents an orientation for a pointy-topped hexagon layout, with specific matrix elements and a start angle.
  */
-const pointyLayout = new Orientation(
+const flatLayout = new Orientation(
     Math.sqrt(3.0), Math.sqrt(3.0) / 2.0, 0.0, 3.0 / 2.0,
     Math.sqrt(3.0) / 3.0, -1.0 / 3.0, 0.0, 2.0 / 3.0,
     0.5
@@ -192,7 +192,7 @@ const pointyLayout = new Orientation(
  * @const {Orientation}
  * @description Represents an orientation for a flat-topped hexagon layout, with specific matrix elements and a start angle.
  */
-const flatLayout = new Orientation(
+const pointyLayout = new Orientation(
     3.0 / 2.0, 0.0, Math.sqrt(3.0) / 2.0, Math.sqrt(3.0),
     2.0 / 3.0, 0.0, -1.0 / 3.0, Math.sqrt(3.0) / 3.0,
     0.0
@@ -203,7 +203,7 @@ const flatLayout = new Orientation(
  * @classdesc Defines a layout by aggregating a Orientation object and two Point objects.
  * 
  * @param {Orientation} orientation Orientation object with the orientation of the layout.
- * @param {Point} size Point object with the size of the layout.
+ * @param {Point} size Point object with the size of the layout. Width & height. x,y.
  * @param {Point} origin Point object with the origin of the layout.
  */
 class Layout {
@@ -224,9 +224,12 @@ class Layout {
  */
 function hexToPixel(layout, hex) {
     const matrix = layout.orientation;
-    const x = (matrix.f0 * hex.q + matrix.f1 * hex.r) * layout.size.x;
-    const y = (matrix.f2 * hex.q + matrix.f3 * hex.r) * layout.size.y;
-    return new Point(x + layout.origin.x, y + layout.origin.y);
+    const origin = layout.origin;
+    const size = layout.size;
+    
+    const x = (matrix.f0 * hex.q + matrix.f1 * hex.r) * size.x;
+    const y = (matrix.f2 * hex.q + matrix.f3 * hex.r) * size.y;
+    return new Point(x + origin.x, y + origin.y);
 }
 
 /**
@@ -239,10 +242,10 @@ function hexToPixel(layout, hex) {
  */
 function pixelToHex(layout, point) {
     const matrix = layout.orientation;
-    const pt = {
-        x: (point.x - layout.origin.x) / layout.size.x,
-        y: (point.y - layout.origin.y) / layout.size.y
-    };
+    const origin = layout.origin;
+    const size = layout.size;
+
+    const pt = new Point((point.x - origin.x) / size.x, (point.y - origin.y) / size.y)
     const q = matrix.b0 * pt.x + matrix.b1 * pt.y;
     const r = matrix.b2 * pt.x + matrix.b3 * pt.y;
     const s = -q - r;
@@ -293,11 +296,11 @@ function hexCornerOffset(layout, corner) {
 }
 
 /**
- * Calculates the corner points of a hexagon in pixel coordinates.
+ * Calculates the six corner points of a hexagon in pixel coordinates (x, y) and puts it in an array of Point objects.
  *
  * @param {Layout} layout Layout object containing size, origin and orientation data.
  * @param {HexCubeC} hex Hex object for which to calculate the corners.
- * @returns {Array<Point>} Array of Point objects, containing points of corners in a polygon in pixel coordinates as x & y.
+ * @returns {Array<Point>} Array of Point objects, containing points of corners in a polygon in pixel coordinates as x, y.
  */
 function polygonCorners(layout, hex) {
     const corners = [];
@@ -310,3 +313,70 @@ function polygonCorners(layout, hex) {
     }
     return corners;
 }
+
+const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+svg.setAttribute("width", "500");
+svg.setAttribute("height", "500");
+document.body.appendChild(svg);
+
+function generateHexagonMap(gridSize) {
+    const grid = new Map();
+
+    for (let q = -gridSize; q <= gridSize; q++) {
+        const rStart = Math.max(-gridSize, -q - gridSize);
+        const rEnd = Math.min(gridSize, -q + gridSize);
+
+        for (let r = rStart; r <= rEnd; r++) {
+            const hex = new HexCubeC(q, r, -q - r);
+            const key = `${hex.q},${hex.r},${hex.s}`;
+
+            const distance = hexLength(hex);
+
+            const hexInfo = {
+                coordinates: { q: hex.q, r: hex.r, s: hex.s },
+                distance
+            };
+            grid.set(key, hexInfo);
+        }
+    }
+    return grid;
+}
+
+function generateLayout(orientation, size, origin){
+    return new Layout(orientation, size, origin)
+}
+
+function generateCorners(layout, hexMap){
+    hexMapArrayed = [...hexMap.values()];
+    return hexMapArrayed.map(hex => polygonCorners(layout, hex.coordinates));
+}
+
+function generateHexagonsSVG(hexMap, allCorners, defaultFill, strokeColour){
+    let = i = -1;
+
+    hexMap.forEach(hex => {
+        i++;
+        const corners = allCorners[i];
+        const polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+        const pointsStr = corners.map(point => `${point.x},${point.y}`).join(" ");
+        polygon.setAttribute("points", pointsStr);
+        polygon.setAttribute("fill", `${defaultFill}`);
+        polygon.setAttribute("stroke", `${strokeColour}`);
+        if(hex.distance){
+            polygon.setAttribute("class", `distance-${hex.distance}`);  
+        }
+
+    
+        svg.appendChild(polygon);
+    });
+
+}
+
+
+const hexagonMap = generateHexagonMap(3); // Adjust hexagon map size as needed
+
+const cornersExample = generateCorners(generateLayout(flatLayout, new Point(10, 10), new Point(250, 250)), hexagonMap);
+
+generateHexagonsSVG(hexagonMap, cornersExample, "white", "black")
+
+
