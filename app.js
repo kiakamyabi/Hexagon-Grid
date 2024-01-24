@@ -314,11 +314,13 @@ function polygonCorners(layout, hex) {
     return corners;
 }
 
-const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-svg.setAttribute("width", "500");
-svg.setAttribute("height", "500");
-document.body.appendChild(svg);
 
+/**
+ * Generates a hexagon map with associated information for a given grid size.
+ *
+ * @param {number} gridSize - The size of the hexagon grid. Determines the range of cube coordinates.
+ * @returns {Map<string, { coordinates: { q: number, r: number, s: number }, distance: number }>} A map containing hexagon data with cube coordinates and distance information.
+ */
 function generateHexagonMap(gridSize) {
     const grid = new Map();
 
@@ -339,6 +341,7 @@ function generateHexagonMap(gridSize) {
             grid.set(key, hexInfo);
         }
     }
+    console.log(grid)
     return grid;
 }
 
@@ -346,37 +349,78 @@ function generateLayout(orientation, size, origin){
     return new Layout(orientation, size, origin)
 }
 
+/**
+ * Generates an array of corner points for each hexagon in the provided hexMap based on the specified layout.
+ *
+ * @param {Layout} layout The layout used for hexagon positioning.
+ * @param {Map<string, any>} hexMap The map containing hexagon data.
+ * @returns {Array<Array<Point>>}  An array of arrays containing hexagon corner points. (Points objects turned into Arrays).
+ */
 function generateCorners(layout, hexMap){
     hexMapArrayed = [...hexMap.values()];
     return hexMapArrayed.map(hex => polygonCorners(layout, hex.coordinates));
 }
 
-function generateHexagonsSVG(hexMap, allCorners, defaultFill, strokeColour){
-    let = i = -1;
+/**
+ * @class
+ * @classdesc
+ * Class representing the configs of the attributes of an SVG, such as fill colour, stroke colour, stroke width, and stroke dash style.
+ *
+ * @param {string} defaultFill The default fill colour.
+ * @param {string} strokeColour The colour of the stroke.
+ * @param {string | number} strokeWidth The width of the stroke.
+ * @param {string | number} strokeDash The dash style of the stroke.
+ */
+class SvgConfigs {
+    constructor(defaultFill, strokeColour, strokeWidth, strokeDash) {
+        this.defaultFill = defaultFill;
+        this.strokeColour = strokeColour;
+        this.strokeWidth = strokeWidth;
+        this.strokeDash = strokeDash;
+    }
+}
 
+/**
+ * Generates SVG polygons for hexagons and appends them to the specified SVG body.
+ *
+ * @param {Map<string, string | number>} hexMap The map containing individual hexagon data. Guaranteed to have q, r s coordinates.
+ * Can have distance tracked.
+ * @param {Array<Array<Point>>} allCorners An array of arrays containing hexagon corner points. (Points objects turned into Arrays).
+ * @param {SVGElement} svgOrigin The SVG element to which polygons will be appended. Basically the origin of the grid.
+ * @param {Object} [svgConfig] Optional configuration for SVG styling.
+ * @property {string} svgConfig.defaultFill The default fill color.
+ * @property {string} svgConfig.strokeColour The color of the stroke.
+ * @property {string | number} svgConfig.strokeWidth The width of the stroke.
+ * @property {string | number} svgConfig.strokeDash The dash style of the stroke.
+ */
+function generateHexagonsSVG(hexMap, allCorners, svgOrigin, svgConfig = {}){
+    let = i = -1;
     hexMap.forEach(hex => {
         i++;
         const corners = allCorners[i];
         const polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
         const pointsStr = corners.map(point => `${point.x},${point.y}`).join(" ");
         polygon.setAttribute("points", pointsStr);
-        polygon.setAttribute("fill", `${defaultFill}`);
-        polygon.setAttribute("stroke", `${strokeColour}`);
+        polygon.setAttribute("fill", svgConfig.defaultFill || "white");
+        polygon.setAttribute("stroke", svgConfig.strokeColour || "black");
+        polygon.setAttribute("stroke-width", svgConfig.strokeWidth || 1);
+        polygon.setAttribute("stroke-dasharray", svgConfig.strokeDash || "none");
         if(hex.distance){
             polygon.setAttribute("class", `distance-${hex.distance}`);  
         }
-
-    
-        svg.appendChild(polygon);
+        svgOrigin.appendChild(polygon);
     });
-
 }
 
+const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+svg.setAttribute("width", "500");
+svg.setAttribute("height", "500");
+document.body.appendChild(svg);
 
-const hexagonMap = generateHexagonMap(3); // Adjust hexagon map size as needed
+const hexagonMap = generateHexagonMap(6);
 
-const cornersExample = generateCorners(generateLayout(flatLayout, new Point(10, 10), new Point(250, 250)), hexagonMap);
+const cornersExample = generateCorners(generateLayout(pointyLayout, new Point(10, 10), new Point(250, 250)), hexagonMap);
 
-generateHexagonsSVG(hexagonMap, cornersExample, "white", "black")
+generateHexagonsSVG(hexagonMap, cornersExample, svg, new SvgConfigs())
 
 
