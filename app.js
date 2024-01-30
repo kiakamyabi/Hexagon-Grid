@@ -427,11 +427,6 @@ function generateHexagonSVGs(hexMap, allCorners, svgOrigin, svgConfig = {}){
         }
         polygon.classList.add("hex-cell"); 
 
-        polygon.classList.add(`kiatestQ-${hex.coordinates.q}`)
-        polygon.classList.add(`kiatestR-${hex.coordinates.r}`)
-        polygon.classList.add(`kiatestS-${hex.coordinates.s}`)
-
-
         svgOrigin.appendChild(polygon);
         polygon.hexData = hex;
         polygon.addEventListener("click", () => handlePolygonClick(polygon));
@@ -466,4 +461,4 @@ document.body.appendChild(svg);
 
 
 
-generateHexGridWithSVG(generateHexagonGrid, 6, svg, new Layout(flatLayout, new Point(10, 10), new Point(250, 250)))
+generateHexGridWithSVG(generateTriangleGrid, 6, svg, new Layout(pointyLayout, new Point(10, 10), new Point(250, 250)))
