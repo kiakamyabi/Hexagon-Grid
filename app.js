@@ -315,13 +315,35 @@ function polygonCorners(layout, hex) {
 }
 
 
+
+function generateTriangleGrid(gridSize){
+    const grid = new Map();
+    
+    for (let q = -gridSize; q <= gridSize; q++) {
+        for (let r = 0; r <= gridSize - q; r++) {
+            const hex = new HexCubeC(q, r, -q - r);
+            const key = `${hex.q},${hex.r},${hex.s}`;
+
+            const distance = hexLength(hex);
+
+            const hexInfo = {
+                coordinates: { q: hex.q, r: hex.r, s: hex.s },
+                distance
+            };
+            grid.set(key, hexInfo);
+        }
+    }
+    console.log(grid)
+    return grid;
+}
+
 /**
  * Generates a hexagon map with associated information for a given grid size.
  *
- * @param {number} gridSize - The size of the hexagon grid. Determines the range of cube coordinates.
+ * @param {number} gridSize The size of the hexagon grid. Determines the range of cube coordinates.
  * @returns {Map<string, { coordinates: { q: number, r: number, s: number }, distance: number }>} A map containing hexagon data with cube coordinates and distance information.
  */
-function generateHexagonMap(gridSize) {
+function generateHexagonGrid(gridSize) {
     const grid = new Map();
 
     for (let q = -gridSize; q <= gridSize; q++) {
@@ -341,22 +363,17 @@ function generateHexagonMap(gridSize) {
             grid.set(key, hexInfo);
         }
     }
-    console.log(grid)
     return grid;
-}
-
-function generateLayout(orientation, size, origin){
-    return new Layout(orientation, size, origin)
 }
 
 /**
  * Generates an array of corner points for each hexagon in the provided hexMap based on the specified layout.
  *
- * @param {Layout} layout The layout used for hexagon positioning.
+ * @param {Layout} layout Layout object containing size, origin and orientation data.
  * @param {Map<string, any>} hexMap The map containing hexagon data.
  * @returns {Array<Array<Point>>}  An array of arrays containing hexagon corner points. (Points objects turned into Arrays).
  */
-function generateCorners(layout, hexMap){
+function generateHexCorners(layout, hexMap){
     hexMapArrayed = [...hexMap.values()];
     return hexMapArrayed.map(hex => polygonCorners(layout, hex.coordinates));
 }
@@ -364,7 +381,7 @@ function generateCorners(layout, hexMap){
 /**
  * @class
  * @classdesc
- * Class representing the configs of the attributes of an SVG, such as fill colour, stroke colour, stroke width, and stroke dash style.
+ * Class representing configuration for SVG styling, including fill color, stroke color, stroke width, and stroke dash style.
  *
  * @param {string} defaultFill The default fill colour.
  * @param {string} strokeColour The colour of the stroke.
@@ -393,7 +410,7 @@ class SvgConfigs {
  * @property {string | number} svgConfig.strokeWidth The width of the stroke.
  * @property {string | number} svgConfig.strokeDash The dash style of the stroke.
  */
-function generateHexagonsSVG(hexMap, allCorners, svgOrigin, svgConfig = {}){
+function generateHexagonSVGs(hexMap, allCorners, svgOrigin, svgConfig = {}){
     let = i = -1;
     hexMap.forEach(hex => {
         i++;
@@ -405,22 +422,48 @@ function generateHexagonsSVG(hexMap, allCorners, svgOrigin, svgConfig = {}){
         polygon.setAttribute("stroke", svgConfig.strokeColour || "black");
         polygon.setAttribute("stroke-width", svgConfig.strokeWidth || 1);
         polygon.setAttribute("stroke-dasharray", svgConfig.strokeDash || "none");
-        if(hex.distance){
-            polygon.setAttribute("class", `distance-${hex.distance}`);  
+        if(hex.distance !== undefined){
+            polygon.classList.add(`distance-${hex.distance}`);  
         }
+        polygon.classList.add("hex-cell"); 
+
+        polygon.classList.add(`kiatestQ-${hex.coordinates.q}`)
+        polygon.classList.add(`kiatestR-${hex.coordinates.r}`)
+        polygon.classList.add(`kiatestS-${hex.coordinates.s}`)
+
+
         svgOrigin.appendChild(polygon);
+        polygon.hexData = hex;
+        polygon.addEventListener("click", () => handlePolygonClick(polygon));
     });
 }
+
+function handlePolygonClick(polygon){
+    const hexData = polygon.hexData;
+    console.log(hexData);
+    console.log(polygon.classList);
+}
+
+/**
+ * Generates a hexagon grid with associated SVG polygons and appends them to the specified SVG origin.
+ *
+ * @param {number} gridSize The size of the hexagon grid. Determines the range of cube coordinates.
+ * @param {SVGElement} svgOrigin The SVG element to which polygons will be appended. Represents the origin of the grid.
+ * @param {Layout} layout Layout object containing size, origin and orientation data.
+ * @param {SvgConfigs} svgConfig Configuration for SVG styling, including fill color, stroke color, stroke width, and stroke dash style.
+ */
+function generateHexGridWithSVG(gridType, gridSize, svgOrigin, layout, svgConfig){
+    hexMap = gridType(gridSize);
+    allCorners = generateHexCorners(layout, hexMap);
+    generateHexagonSVGs(hexMap, allCorners, svgOrigin, svgConfig)
+}
+
 
 const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 svg.setAttribute("width", "500");
 svg.setAttribute("height", "500");
 document.body.appendChild(svg);
 
-const hexagonMap = generateHexagonMap(6);
-
-const cornersExample = generateCorners(generateLayout(pointyLayout, new Point(10, 10), new Point(250, 250)), hexagonMap);
-
-generateHexagonsSVG(hexagonMap, cornersExample, svg, new SvgConfigs())
 
 
+generateHexGridWithSVG(generateHexagonGrid, 6, svg, new Layout(flatLayout, new Point(10, 10), new Point(250, 250)))

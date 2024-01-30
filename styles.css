@@ -1,51 +1,45 @@
 .distance-0 {
     fill: white;
 }
-
 .distance-1 {
-    fill: #ff0000; /* Red */
+    fill: #ff0000; 
 }
-
 .distance-2 {
-    fill: #ff7f00; /* Orange */
+    fill: #ff7f00; 
 }
-
 .distance-3 {
-    fill: #ffff00; /* Yellow */
+    fill: #ffff00; 
 }
-
 .distance-4 {
-    fill: #00ff00; /* Green */
+    fill: #00ff00;
 }
-
 .distance-5 {
-    fill: #0000ff; /* Blue */
+    fill: #0000ff;
 }
-
 .distance-6 {
-    fill: #8b00ff; /* Indigo */
+    fill: #8b00ff;
 }
-
+.distance-7 {
+    fill: #ff0000;
+}
+.distance-8 {
+    fill: #ff7f00;/
+}
 .distance-1:hover {
-    fill: #990000; /* Darker red */
+    fill: #990000;
 }
-
 .distance-2:hover {
-    fill: #994c00; /* Darker orange */
+    fill: #994c00;
 }
-
 .distance-3:hover {
-    fill: #808000; /* Darker yellow */
+    fill: #808000;
 }
-
 .distance-4:hover {
-    fill: #004d00; /* Darker green */
+    fill: #004d00;
 }
-
 .distance-5:hover {
-    fill: #000080; /* Darker blue */
+    fill: #000080;
 }
-
 .distance-6:hover {
-    fill: #660066; /* Darker indigo */
+    fill: #660066;
 }
