@@ -182,7 +182,7 @@ class Point {
  * @const {Orientation}
  * @description Represents an orientation for a pointy-topped hexagon layout, with specific matrix elements and a start angle.
  */
-const flatLayout = new Orientation(
+const hexFlatLayout = new Orientation(
     Math.sqrt(3.0), Math.sqrt(3.0) / 2.0, 0.0, 3.0 / 2.0,
     Math.sqrt(3.0) / 3.0, -1.0 / 3.0, 0.0, 2.0 / 3.0,
     0.5
@@ -192,7 +192,7 @@ const flatLayout = new Orientation(
  * @const {Orientation}
  * @description Represents an orientation for a flat-topped hexagon layout, with specific matrix elements and a start angle.
  */
-const pointyLayout = new Orientation(
+const hexPointyLayout = new Orientation(
     3.0 / 2.0, 0.0, Math.sqrt(3.0) / 2.0, Math.sqrt(3.0),
     2.0 / 3.0, 0.0, -1.0 / 3.0, Math.sqrt(3.0) / 3.0,
     0.0
@@ -314,6 +314,44 @@ function polygonCorners(layout, hex) {
     return corners;
 }
 
+function generateTriangleGridCOMBO(gridSize, orientation){
+    const grid = new Map();
+    if (orientation === triangleUp || orientation === triangleDown){
+        for (let q = -gridSize; q <= gridSize; q++) {
+            for (let r = 0; r <= gridSize - q; r++) {
+                const hex = new HexCubeC(q, r, -q - r);
+                const key = `${hex.q},${hex.r},${hex.s}`;
+    
+                const distance = hexLength(hex);
+    
+                const hexInfo = {
+                    coordinates: { q: hex.q, r: hex.r, s: hex.s },
+                    distance
+                };
+                grid.set(key, hexInfo);
+            }
+        }
+    }
+    else if (orientation === triangleLeft || orientation === triangleRight){
+        for (let r = -gridSize; r <= gridSize; r++) {
+            for (let q = 0; q <= gridSize - r; q++) {
+                const hex = new HexCubeC(q, r, -q - r);
+                const key = `${hex.q},${hex.r},${hex.s}`;
+    
+                const distance = hexLength(hex);
+    
+                const hexInfo = {
+                    coordinates: { q: hex.q, r: hex.r, s: hex.s },
+                    distance
+                };
+                grid.set(key, hexInfo);
+            }
+        }
+    }
+
+    console.log(grid)
+    return grid;
+}
 
 
 function generateTriangleGrid(gridSize){
@@ -321,6 +359,28 @@ function generateTriangleGrid(gridSize){
     
     for (let q = -gridSize; q <= gridSize; q++) {
         for (let r = 0; r <= gridSize - q; r++) {
+            const hex = new HexCubeC(q, r, -q - r);
+            const key = `${hex.q},${hex.r},${hex.s}`;
+
+            const distance = hexLength(hex);
+
+            const hexInfo = {
+                coordinates: { q: hex.q, r: hex.r, s: hex.s },
+                distance
+            };
+            grid.set(key, hexInfo);
+        }
+    }
+    console.log(grid)
+    return grid;
+}
+
+
+function generateTriangleGridTEST(gridSize){
+    const grid = new Map();
+    
+    for (let r = -gridSize; r <= gridSize; r++) {
+        for (let q = 0; q <= gridSize - r; q++) {
             const hex = new HexCubeC(q, r, -q - r);
             const key = `${hex.q},${hex.r},${hex.s}`;
 
@@ -433,6 +493,7 @@ function generateHexagonSVGs(hexMap, allCorners, svgOrigin, svgConfig = {}){
     });
 }
 
+//
 function handlePolygonClick(polygon){
     const hexData = polygon.hexData;
     console.log(hexData);
@@ -448,7 +509,7 @@ function handlePolygonClick(polygon){
  * @param {SvgConfigs} svgConfig Configuration for SVG styling, including fill color, stroke color, stroke width, and stroke dash style.
  */
 function generateHexGridWithSVG(gridType, gridSize, svgOrigin, layout, svgConfig){
-    hexMap = gridType(gridSize);
+    hexMap = gridType(gridSize, layout.orientation);
     allCorners = generateHexCorners(layout, hexMap);
     generateHexagonSVGs(hexMap, allCorners, svgOrigin, svgConfig)
 }
@@ -459,6 +520,28 @@ svg.setAttribute("width", "500");
 svg.setAttribute("height", "500");
 document.body.appendChild(svg);
 
+//WORKS WITH TEST TRI GRID
+const triangleLeft = new Orientation(
+    -3.0 / 2.0, 0.0, Math.sqrt(3.0) / 2.0, Math.sqrt(3.0),
+    2.0 / 3.0, 0.0, -1.0 / 3.0, Math.sqrt(3.0) / 3.0,
+    0.0
+);
+const triangleRight = new Orientation(
+    3.0 / 2.0, 0.0, Math.sqrt(3.0) / 2.0, Math.sqrt(3.0),
+    2.0 / 3.0, 0.0, -1.0 / 3.0, Math.sqrt(3.0) / 3.0,
+    0.0
+);
 
+//WORKS WITH DEFAULT TRI GRID
+const triangleUp = new Orientation(
+    Math.sqrt(3.0), Math.sqrt(3.0) / 2.0, 0.0, -3.0 / 2.0,
+    Math.sqrt(3.0) / 3.0, -1.0 / 3.0, 0.0, 2.0 / 3.0,
+    0.5
+);
+const triangleDown = new Orientation(
+    Math.sqrt(3.0), Math.sqrt(3.0) / 2.0, 0.0, 3.0 / 2.0,
+    Math.sqrt(3.0) / 3.0, -1.0 / 3.0, 0.0, 2.0 / 3.0,
+    0.5
+);
 
-generateHexGridWithSVG(generateTriangleGrid, 6, svg, new Layout(pointyLayout, new Point(10, 10), new Point(250, 250)))
+generateHexGridWithSVG(generateHexagonGrid, 6, svg, new Layout(hexFlatLayout, new Point(10, 10), new Point(250, 250)))
