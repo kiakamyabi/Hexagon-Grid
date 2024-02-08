@@ -19,7 +19,6 @@ class HexCubeC{
     }
 }
 
-
 /**
  * Six Hex objects representing six possible directions on a hexagon grid with cube coordinates.
  * @type {Array<HexCubeC>}
@@ -197,6 +196,46 @@ const hexPointyLayout = new Orientation(
     2.0 / 3.0, 0.0, -1.0 / 3.0, Math.sqrt(3.0) / 3.0,
     0.0
 );
+/**
+ * @const {Orientation}
+ * @description Represents an orientation for a triangle shaped hexagon layout with the tip pointing left, with specific matrix
+ *  elements and a start angle.
+ */
+const triangleLeft = new Orientation(
+    -3.0 / 2.0, 0.0, Math.sqrt(3.0) / 2.0, Math.sqrt(3.0),
+    2.0 / 3.0, 0.0, -1.0 / 3.0, Math.sqrt(3.0) / 3.0,
+    0.0
+);
+/**
+ * @const {Orientation}
+ * @description Represents an orientation for a triangle shaped hexagon layout with the tip pointing right, with specific matrix
+ *  elements and a start angle.
+ */
+const triangleRight = new Orientation(
+    3.0 / 2.0, 0.0, Math.sqrt(3.0) / 2.0, Math.sqrt(3.0),
+    2.0 / 3.0, 0.0, -1.0 / 3.0, Math.sqrt(3.0) / 3.0,
+    0.0
+);
+/**
+ * @const {Orientation}
+ * @description Represents an orientation for a triangle shaped hexagon layout with the tip pointing up, with specific matrix
+ *  elements and a start angle.
+ */
+const triangleUp = new Orientation(
+    Math.sqrt(3.0), Math.sqrt(3.0) / 2.0, 0.0, -3.0 / 2.0,
+    Math.sqrt(3.0) / 3.0, -1.0 / 3.0, 0.0, 2.0 / 3.0,
+    0.5
+);
+/**
+ * @const {Orientation}
+ * @description Represents an orientation for a triangle shaped hexagon layout with the tip pointing down, with specific matrix
+ *  elements and a start angle.
+ */
+const triangleDown = new Orientation(
+    Math.sqrt(3.0), Math.sqrt(3.0) / 2.0, 0.0, 3.0 / 2.0,
+    Math.sqrt(3.0) / 3.0, -1.0 / 3.0, 0.0, 2.0 / 3.0,
+    0.5
+);
 
 /**
  * @class
@@ -211,6 +250,25 @@ class Layout {
         this.orientation = orientation;
         this.size = size;
         this.origin = origin;
+    }
+}
+
+/**
+ * @class
+ * @classdesc
+ * Class representing configuration for SVG styling, including fill color, stroke color, stroke width, and stroke dash style.
+ *
+ * @param {string} defaultFill The default fill colour.
+ * @param {string} strokeColour The colour of the stroke.
+ * @param {string | number} strokeWidth The width of the stroke.
+ * @param {string | number} strokeDash The dash style of the stroke.
+ */
+class SvgConfigs {
+    constructor(defaultFill, strokeColour, strokeWidth, strokeDash) {
+        this.defaultFill = defaultFill;
+        this.strokeColour = strokeColour;
+        this.strokeWidth = strokeWidth;
+        this.strokeDash = strokeDash;
     }
 }
 
@@ -314,7 +372,15 @@ function polygonCorners(layout, hex) {
     return corners;
 }
 
-function generateTriangleGridCOMBO(gridSize, orientation){
+/**
+ * Generates a hexagon grid with associated information for a given grid size and orientation.
+ *
+ * @param {number} gridSize The size of the hexagon grid. Determines the range of cube coordinates.
+ * @param {Orientation} orientation The orientation of the grid. Should be one of the predefined orientation objects.
+ * @returns {Map<string, { coordinates: { q: number, r: number, s: number }, distance: number }>} A map containing hexagon data with cube
+ * coordinates, for a triangle shaped hexagon grid.
+ */
+function generateTriangleGrid(gridSize, orientation){
     const grid = new Map();
     if (orientation === triangleUp || orientation === triangleDown){
         for (let q = -gridSize; q <= gridSize; q++) {
@@ -348,51 +414,6 @@ function generateTriangleGridCOMBO(gridSize, orientation){
             }
         }
     }
-
-    console.log(grid)
-    return grid;
-}
-
-
-function generateTriangleGrid(gridSize){
-    const grid = new Map();
-    
-    for (let q = -gridSize; q <= gridSize; q++) {
-        for (let r = 0; r <= gridSize - q; r++) {
-            const hex = new HexCubeC(q, r, -q - r);
-            const key = `${hex.q},${hex.r},${hex.s}`;
-
-            const distance = hexLength(hex);
-
-            const hexInfo = {
-                coordinates: { q: hex.q, r: hex.r, s: hex.s },
-                distance
-            };
-            grid.set(key, hexInfo);
-        }
-    }
-    console.log(grid)
-    return grid;
-}
-
-
-function generateTriangleGridTEST(gridSize){
-    const grid = new Map();
-    
-    for (let r = -gridSize; r <= gridSize; r++) {
-        for (let q = 0; q <= gridSize - r; q++) {
-            const hex = new HexCubeC(q, r, -q - r);
-            const key = `${hex.q},${hex.r},${hex.s}`;
-
-            const distance = hexLength(hex);
-
-            const hexInfo = {
-                coordinates: { q: hex.q, r: hex.r, s: hex.s },
-                distance
-            };
-            grid.set(key, hexInfo);
-        }
-    }
     console.log(grid)
     return grid;
 }
@@ -401,7 +422,8 @@ function generateTriangleGridTEST(gridSize){
  * Generates a hexagon map with associated information for a given grid size.
  *
  * @param {number} gridSize The size of the hexagon grid. Determines the range of cube coordinates.
- * @returns {Map<string, { coordinates: { q: number, r: number, s: number }, distance: number }>} A map containing hexagon data with cube coordinates and distance information.
+ * @returns {Map<string, { coordinates: { q: number, r: number, s: number }, distance: number }>} A map containing hexagon data with cube
+ *  coordinates and distance information.
  */
 function generateHexagonGrid(gridSize) {
     const grid = new Map();
@@ -439,25 +461,6 @@ function generateHexCorners(layout, hexMap){
 }
 
 /**
- * @class
- * @classdesc
- * Class representing configuration for SVG styling, including fill color, stroke color, stroke width, and stroke dash style.
- *
- * @param {string} defaultFill The default fill colour.
- * @param {string} strokeColour The colour of the stroke.
- * @param {string | number} strokeWidth The width of the stroke.
- * @param {string | number} strokeDash The dash style of the stroke.
- */
-class SvgConfigs {
-    constructor(defaultFill, strokeColour, strokeWidth, strokeDash) {
-        this.defaultFill = defaultFill;
-        this.strokeColour = strokeColour;
-        this.strokeWidth = strokeWidth;
-        this.strokeDash = strokeDash;
-    }
-}
-
-/**
  * Generates SVG polygons for hexagons and appends them to the specified SVG body.
  *
  * @param {Map<string, string | number>} hexMap The map containing individual hexagon data. Guaranteed to have q, r s coordinates.
@@ -476,28 +479,25 @@ function generateHexagonSVGs(hexMap, allCorners, svgOrigin, svgConfig = {}){
         i++;
         const corners = allCorners[i];
         const polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
-        const pointsStr = corners.map(point => `${point.x},${point.y}`).join(" ");
-        polygon.setAttribute("points", pointsStr);
+        const pointsString = corners.map(point => `${point.x},${point.y}`).join(" ");
+
+        polygon.setAttribute("points", pointsString);
         polygon.setAttribute("fill", svgConfig.defaultFill || "white");
         polygon.setAttribute("stroke", svgConfig.strokeColour || "black");
         polygon.setAttribute("stroke-width", svgConfig.strokeWidth || 1);
         polygon.setAttribute("stroke-dasharray", svgConfig.strokeDash || "none");
+
         if(hex.distance !== undefined){
             polygon.classList.add(`distance-${hex.distance}`);  
         }
         polygon.classList.add("hex-cell"); 
 
         svgOrigin.appendChild(polygon);
+        
+        //Test
         polygon.hexData = hex;
         polygon.addEventListener("click", () => handlePolygonClick(polygon));
     });
-}
-
-//
-function handlePolygonClick(polygon){
-    const hexData = polygon.hexData;
-    console.log(hexData);
-    console.log(polygon.classList);
 }
 
 /**
@@ -514,34 +514,18 @@ function generateHexGridWithSVG(gridType, gridSize, svgOrigin, layout, svgConfig
     generateHexagonSVGs(hexMap, allCorners, svgOrigin, svgConfig)
 }
 
+//Test
+function handlePolygonClick(polygon){
+    const hexData = polygon.hexData;
+    console.log(hexData);
+    console.log(polygon.classList);
+}
 
 const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 svg.setAttribute("width", "500");
 svg.setAttribute("height", "500");
 document.body.appendChild(svg);
 
-//WORKS WITH TEST TRI GRID
-const triangleLeft = new Orientation(
-    -3.0 / 2.0, 0.0, Math.sqrt(3.0) / 2.0, Math.sqrt(3.0),
-    2.0 / 3.0, 0.0, -1.0 / 3.0, Math.sqrt(3.0) / 3.0,
-    0.0
-);
-const triangleRight = new Orientation(
-    3.0 / 2.0, 0.0, Math.sqrt(3.0) / 2.0, Math.sqrt(3.0),
-    2.0 / 3.0, 0.0, -1.0 / 3.0, Math.sqrt(3.0) / 3.0,
-    0.0
-);
 
-//WORKS WITH DEFAULT TRI GRID
-const triangleUp = new Orientation(
-    Math.sqrt(3.0), Math.sqrt(3.0) / 2.0, 0.0, -3.0 / 2.0,
-    Math.sqrt(3.0) / 3.0, -1.0 / 3.0, 0.0, 2.0 / 3.0,
-    0.5
-);
-const triangleDown = new Orientation(
-    Math.sqrt(3.0), Math.sqrt(3.0) / 2.0, 0.0, 3.0 / 2.0,
-    Math.sqrt(3.0) / 3.0, -1.0 / 3.0, 0.0, 2.0 / 3.0,
-    0.5
-);
 
-generateHexGridWithSVG(generateHexagonGrid, 6, svg, new Layout(hexFlatLayout, new Point(10, 10), new Point(250, 250)))
+generateHexGridWithSVG(generateTriangleGrid, 6, svg, new Layout(triangleLeft, new Point(10, 10), new Point(250, 250)))
