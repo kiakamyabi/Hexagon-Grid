@@ -256,19 +256,36 @@ class Layout {
 /**
  * @class
  * @classdesc
- * Class representing configuration for SVG styling, including fill color, stroke color, stroke width, and stroke dash style.
+ * Optional Class representing configuration for SVG styling, including fill color, stroke color, stroke width, and stroke dash style.
  *
- * @param {string} defaultFill The default fill colour.
- * @param {string} strokeColour The colour of the stroke.
- * @param {string | number} strokeWidth The width of the stroke.
- * @param {string | number} strokeDash The dash style of the stroke.
+ * @param {string | undefined} fillColour The default fill colour.
+ * @param {string | undefined} strokeColour The colour of the stroke.
+ * @param {string | number | undefined} strokeWidth The width of the stroke.
+ * @param {string | number | undefined} strokeDash The dash style of the stroke.
  */
 class SvgConfigs {
-    constructor(defaultFill, strokeColour, strokeWidth, strokeDash) {
-        this.defaultFill = defaultFill;
+    constructor(fillColour, strokeColour, strokeWidth, strokeDash) {
+        this.fillColour = fillColour;
         this.strokeColour = strokeColour;
         this.strokeWidth = strokeWidth;
         this.strokeDash = strokeDash;
+    }
+}
+
+/**
+ * @class
+ * @classdesc
+ * Optional Class representing configuration for a default class name, ID name, and an extra class name.
+ * 
+ * @param {string | undefined} defaultClass Replaces default class of the SVG polygons.
+ * @param {string | undefined} defaultId ID prefix to be added to the SVG polygons with an iterator suffix to give each polygon a unique id.
+ * @param {string | undefined} extraClass An additional class to be added to the SVG polygons.
+ */
+class ClassConfigs {
+    constructor(defaultClass, defaultId, extraClass) {
+        this.defaultClass = defaultClass;
+        this.defaultId = defaultId;
+        this.extraClass = extraClass
     }
 }
 
@@ -467,13 +484,20 @@ function generateHexCorners(layout, hexMap){
  * Can have distance tracked.
  * @param {Array<Array<Point>>} allCorners An array of arrays containing hexagon corner points. (Points objects turned into Arrays).
  * @param {SVGElement} svgOrigin The SVG element to which polygons will be appended. Basically the origin of the grid.
- * @param {Object} [svgConfig] Optional configuration for SVG styling.
- * @property {string} svgConfig.defaultFill The default fill color.
- * @property {string} svgConfig.strokeColour The color of the stroke.
- * @property {string | number} svgConfig.strokeWidth The width of the stroke.
- * @property {string | number} svgConfig.strokeDash The dash style of the stroke.
+ * 
+ * @param {SvgConfigs} [svgConfig] Optional configuration for SVG styling.
+ * @property {string | undefined} svgConfig.defaultFill The default fill color.
+ * @property {string | undefined} svgConfig.strokeColour The color of the stroke.
+ * @property {string | number | undefined} svgConfig.strokeWidth The width of the stroke.
+ * @property {string | number | undefined} svgConfig.strokeDash The dash style of the stroke.
+ * 
+ * @param {ClassConfigs} [classConfig] Optional configuration for adding classes and ID to SVG polygons.
+ * @property {string | undefined} [classConfig.defaultClass] Replaces default class of the SVG polygons.
+ * @property {string | undefined} [classConfig.defaultId] ID prefix to be added to the SVG polygons with an iterator suffix
+ *  to give each polygon a unique id.
+ * @property {string | undefined} [classConfig.extraClass] An additional class to be added to the SVG polygons.
  */
-function generateHexagonSVGs(hexMap, allCorners, svgOrigin, svgConfig = {}){
+function generateHexagonSVGs(hexMap, allCorners, svgOrigin, svgConfig = {}, classConfig = {}){
     let = i = -1;
     hexMap.forEach(hex => {
         i++;
@@ -487,10 +511,18 @@ function generateHexagonSVGs(hexMap, allCorners, svgOrigin, svgConfig = {}){
         polygon.setAttribute("stroke-width", svgConfig.strokeWidth || 1);
         polygon.setAttribute("stroke-dasharray", svgConfig.strokeDash || "none");
 
+        polygon.classList.add(classConfig.defaultClass || "hex-cell")
+
+        if(classConfig.defaultId !== undefined){
+            polygon.setAttribute("id", `${classConfig.defaultId}-${i + 1}`);  
+        }
+        if(classConfig.extraClass !== undefined){
+            polygon.classList.add(classConfig.extraClass);  
+        }
+
         if(hex.distance !== undefined){
             polygon.classList.add(`distance-${hex.distance}`);  
         }
-        polygon.classList.add("hex-cell"); 
 
         svgOrigin.appendChild(polygon);
         
@@ -503,15 +535,16 @@ function generateHexagonSVGs(hexMap, allCorners, svgOrigin, svgConfig = {}){
 /**
  * Generates a hexagon grid with associated SVG polygons and appends them to the specified SVG origin.
  *
+ * @param {generateHexagonGrid | generateTriangleGrid} gridType A function that generates the hexagon grid based on the grid type and size.
  * @param {number} gridSize The size of the hexagon grid. Determines the range of cube coordinates.
  * @param {SVGElement} svgOrigin The SVG element to which polygons will be appended. Represents the origin of the grid.
  * @param {Layout} layout Layout object containing size, origin and orientation data.
  * @param {SvgConfigs} svgConfig Configuration for SVG styling, including fill color, stroke color, stroke width, and stroke dash style.
  */
-function generateHexGridWithSVG(gridType, gridSize, svgOrigin, layout, svgConfig){
+function generateHexGridWithSVG(gridType, gridSize, svgOrigin, layout, svgConfig, classConfig){
     hexMap = gridType(gridSize, layout.orientation);
     allCorners = generateHexCorners(layout, hexMap);
-    generateHexagonSVGs(hexMap, allCorners, svgOrigin, svgConfig)
+    generateHexagonSVGs(hexMap, allCorners, svgOrigin, svgConfig, classConfig)
 }
 
 //Test
@@ -519,6 +552,7 @@ function handlePolygonClick(polygon){
     const hexData = polygon.hexData;
     console.log(hexData);
     console.log(polygon.classList);
+    console.log(polygon.id)
 }
 
 const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -528,4 +562,4 @@ document.body.appendChild(svg);
 
 
 
-generateHexGridWithSVG(generateTriangleGrid, 6, svg, new Layout(triangleLeft, new Point(10, 10), new Point(250, 250)))
+generateHexGridWithSVG(generateHexagonGrid, 6, svg, new Layout(hexFlatLayout, new Point(10, 10), new Point(250, 250)));
