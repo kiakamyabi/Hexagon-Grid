@@ -1,3 +1,26 @@
+#svg_configs_div {
+    display: flex;
+    border: 1px black solid;
+    padding: 5px;
+    margin: 5px;
+    flex-direction: column;
+    font-family: Arial, sans-serif;
+}
+#svg_configs_div > div {
+    margin-bottom: 10px; 
+}
+#grid_configs_div {
+    display: flex;
+    border: 1px black solid;
+    padding: 5px;
+    margin: 5px;
+    flex-direction: column;
+    font-family: Arial, sans-serif;
+}
+#grid_configs_div > div {
+    margin-bottom: 10px; 
+}
+
 .distance-0 {
     fill: white;
 }

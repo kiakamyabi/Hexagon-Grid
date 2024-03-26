@@ -431,7 +431,6 @@ function generateTriangleGrid(gridSize, orientation){
             }
         }
     }
-    console.log(grid)
     return grid;
 }
 
@@ -512,7 +511,6 @@ function generateHexagonSVGs(hexMap, allCorners, svgOrigin, svgConfig = {}, clas
         polygon.setAttribute("stroke-dasharray", svgConfig.strokeDash || "none");
 
         polygon.classList.add(classConfig.defaultClass || "hex-cell")
-
         if(classConfig.defaultId !== undefined){
             polygon.setAttribute("id", `${classConfig.defaultId}-${i + 1}`);  
         }
@@ -555,11 +553,90 @@ function handlePolygonClick(polygon){
     console.log(polygon.id)
 }
 
-const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-svg.setAttribute("width", "500");
-svg.setAttribute("height", "500");
-document.body.appendChild(svg);
 
 
+function generateSvgConfigs(svgFillColInput, svgStrokeColInput, svgStrokeWidth, svgStrokeDash){
+    const fillColour = document.getElementById(svgFillColInput).value;
+    const strokeColour = document.getElementById(svgStrokeColInput).value;
+    const strokeWidth = document.getElementById(svgStrokeWidth).value;
+    const strokeDash = document.getElementById(svgStrokeDash).value;
 
-generateHexGridWithSVG(generateHexagonGrid, 6, svg, new Layout(hexFlatLayout, new Point(10, 10), new Point(250, 250)));
+    return new SvgConfigs(fillColour, strokeColour, strokeWidth, strokeDash);
+}
+
+function generateSVG(widthInput, heightInput, containerID) {
+    const svgDiv = document.getElementById(containerID);
+    let existingSVG = svgDiv.querySelector('svg');
+
+    if (existingSVG) {
+        svgDiv.removeChild(existingSVG);
+    }
+
+    const svgSizeWidth = document.getElementById(widthInput).value;
+    const svgSizeHeight = document.getElementById(heightInput).value;
+
+    const newSVG = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    newSVG.setAttribute('width', svgSizeWidth);
+    newSVG.setAttribute('height', svgSizeHeight);
+    svgDiv.appendChild(newSVG);
+
+    // return new Point(svgSizeWidth / 2, svgSizeHeight / 2)
+
+    const centerPoint = new Point(svgSizeWidth / 2, svgSizeHeight / 2);
+
+    return { point: centerPoint, id: containerID };
+}
+
+function generateGrid(containerInfo, gridTypeInput, layoutInput, gridSizeInput, cellSizeInput) {
+    const gridType = document.getElementById(gridTypeInput).value;
+    const layoutType = document.getElementById(layoutInput).value;
+    const gridSize = parseInt(document.getElementById(gridSizeInput).value);
+    const cellSize = document.getElementById(cellSizeInput).value;
+    let orientation;
+
+    const firstSVG = document.getElementById(containerInfo.id).querySelector('svg');
+
+
+    if (gridType === 'hexagon') {
+        orientation = layoutType === 'flat' ? hexFlatLayout : hexPointyLayout;
+        generateHexGridWithSVG(generateHexagonGrid, gridSize, firstSVG, new Layout(orientation, new Point(parseInt(cellSize), parseInt(cellSize)), containerInfo.point));
+    } else if (gridType === 'triangle'){
+        if (layoutType === 'left') {
+            orientation = triangleLeft;
+        } else if (layoutType === 'right'){
+            orientation = triangleRight;
+        } else if (layoutType === 'up'){
+            orientation = triangleUp;
+        } else if (layoutType === 'down'){
+            orientation = triangleDown;
+        }
+        generateHexGridWithSVG(generateTriangleGrid, gridSize, firstSVG, new Layout(orientation, new Point(parseInt(cellSize), parseInt(cellSize)), containerInfo.point));
+    }
+}
+
+function updateLayoutSelect() {
+    const gridType = document.getElementById('gridTypeSelect').value;
+    const layoutSelect = document.getElementById('layoutSelect');
+    layoutSelect.innerHTML = '';
+    
+    if (gridType === 'hexagon') {
+        layoutSelect.innerHTML += '<option value="flat">Flat Top</option>';
+        layoutSelect.innerHTML += '<option value="pointy">Pointy Top</option>';
+    } else if (gridType === 'triangle') {
+        layoutSelect.innerHTML += '<option value="left">Triangle Left</option>';
+        layoutSelect.innerHTML += '<option value="right">Triangle Right</option>';
+        layoutSelect.innerHTML += '<option value="up">Triangle Up</option>';
+        layoutSelect.innerHTML += '<option value="down">Triangle Down</option>';
+    }
+}
+
+document.getElementById('gridTypeSelect').addEventListener('change', updateLayoutSelect);
+
+document.getElementById('generateButton').addEventListener('click', function() {
+    svgSizePoint = generateSVG('svgSizeInput', 'svgSizeInput', 'svg_div')
+    generateGrid(svgSizePoint, 'gridTypeSelect', 'layoutSelect', 'gridSizeInput', 'cellSizeInput');
+});
+
+// document.getElementById('svgConfigsBtn').addEventListener('click', function() {
+//     generateSvgConfigs('svgFillColourInput', 'svgStrokeColourInput', 'svgStrokeWidthInput', 'svgStrokeDashInput');
+// });

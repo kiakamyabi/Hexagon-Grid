@@ -16,8 +16,8 @@ gridSize = Size of the grid in number of cells. <br>
 svgOrigin = The SVG element which is the location of where the grid will be created. <br>
 
 layout = Layout, a class object which contains the data of the orientation of the grid, the size of the individual hexagons and the
-    location of the origin of the grid. For hexagon shaped grids the origin is the centre of the grid, for triangle grids it is the middle 
-    of the flat end, opposite the triangles middle point. <br>
+location of the origin of the grid. For hexagon shaped grids the origin is the centre of the grid, for triangle grids it is the middle 
+of the flat end, opposite the triangles middle point. <br>
 
 (Optional) svgConfig = SvgConfigs, a class object which contains the data for configuring default SVG attributes. Can change fill colour,
 stroke colour, stroke width and stroke dash. <br>
