@@ -321,11 +321,6 @@ The value contains:
 
 Creating a grid is simple. <br>
 
-For the hexagon shaped grids you need to input one parameter.
-<ol>
-<li>Call the function and input the size you want as a parameter. <br>
-</ol>
-
 Each 1 point of size represents one ring of cells around the origin point. <br>
 
 <details>
@@ -336,6 +331,11 @@ Each 1 point of size represents one ring of cells around the origin point. <br>
 
 <details>
 <summary>Hexagon Shape Example</summary>
+For the hexagon shaped grids you need to input one parameter.
+<ol>
+<li>Call the function and input the size you want as a parameter. <br>
+</ol>
+
 In this example the grid would have 2 rings around the origin point. <br>
 
 ```javascript
@@ -427,7 +427,7 @@ const exampleTriGrid = generateTriangleGrid(3, triangleDown)
 
 Heres how that would look with if you visually render the downward pointing grid as a 10, 10 cell size grid. <br>
 
-<img width="200" src="images/two_size_tri_left_example.png" alt="Example of left pointing size 2 triangle grid.">
+<img width="200" src="images/three_size_tri_down_example.png" alt="Example of downward pointing size 3 triangle grid.">
 
 <details>
 <summary>Generate Triangle Grid function</summary>
@@ -475,6 +475,10 @@ function generateTriangleGrid(gridSize, orientation){
 </details>
 </details>
 
+_______ 
+
+
+_______ 
 
 ## Quick how to use (with SVG) (Not updated this part of the readme)
 With this function, a hexagon grid will be created at in an SVG element. <br>
