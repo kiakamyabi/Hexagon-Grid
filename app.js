@@ -242,7 +242,7 @@ const triangleDown = new Orientation(
  * @classdesc Defines a layout by aggregating a Orientation object and two Point objects.
  * 
  * @param {Orientation} orientation Orientation object with the orientation of the layout.
- * @param {Point} size Point object with the size of the layout. Width & height. x,y.
+ * @param {Point} size Point object with the size of the layout. Width & height. X, Y.
  * @param {Point} origin Point object with the origin of the layout.
  */
 class Layout {
@@ -256,7 +256,7 @@ class Layout {
 /**
  * @class
  * @classdesc
- * Optional Class representing configuration for SVG styling, including fill color, stroke color, stroke width, and stroke dash style.
+ * Optional Class representing configuration for SVG styling, including fill colour, stroke colour, stroke width, and stroke dash style.
  *
  * @param {string | undefined} fillColour The default fill colour.
  * @param {string | undefined} strokeColour The colour of the stroke.
@@ -389,11 +389,15 @@ function polygonCorners(layout, hex) {
     return corners;
 }
 
+
+/**
+ * @typedef {'triangleUp' | 'triangleDown' | 'triangleRight' | 'triangleLeft'} TriangleOrientation
+ */
 /**
  * Generates a hexagon grid with associated information for a given grid size and orientation.
  *
  * @param {number} gridSize The size of the hexagon grid. Determines the range of cube coordinates.
- * @param {Orientation} orientation The orientation of the grid. Should be one of the predefined orientation objects.
+ * @param {TriangleOrientation} orientation The orientation of the grid. Should be one of the predefined orientation objects.
  * @returns {Map<string, { coordinates: { q: number, r: number, s: number }, distance: number }>} A map containing hexagon data with cube
  * coordinates, for a triangle shaped hexagon grid.
  */
@@ -431,6 +435,7 @@ function generateTriangleGrid(gridSize, orientation){
             }
         }
     }
+    console.log(grid)
     return grid;
 }
 
@@ -485,8 +490,8 @@ function generateHexCorners(layout, hexMap){
  * @param {SVGElement} svgOrigin The SVG element to which polygons will be appended. Basically the origin of the grid.
  * 
  * @param {SvgConfigs} [svgConfig] Optional configuration for SVG styling.
- * @property {string | undefined} svgConfig.defaultFill The default fill color.
- * @property {string | undefined} svgConfig.strokeColour The color of the stroke.
+ * @property {string | undefined} svgConfig.defaultFill The default fill colour.
+ * @property {string | undefined} svgConfig.strokeColour The colour of the stroke.
  * @property {string | number | undefined} svgConfig.strokeWidth The width of the stroke.
  * @property {string | number | undefined} svgConfig.strokeDash The dash style of the stroke.
  * 
@@ -505,7 +510,7 @@ function generateHexagonSVGs(hexMap, allCorners, svgOrigin, svgConfig = {}, clas
         const pointsString = corners.map(point => `${point.x},${point.y}`).join(" ");
 
         polygon.setAttribute("points", pointsString);
-        polygon.setAttribute("fill", svgConfig.defaultFill || "white");
+        polygon.setAttribute("fill", svgConfig.fillColour || "white");
         polygon.setAttribute("stroke", svgConfig.strokeColour || "black");
         polygon.setAttribute("stroke-width", svgConfig.strokeWidth || 1);
         polygon.setAttribute("stroke-dasharray", svgConfig.strokeDash || "none");
@@ -537,7 +542,7 @@ function generateHexagonSVGs(hexMap, allCorners, svgOrigin, svgConfig = {}, clas
  * @param {number} gridSize The size of the hexagon grid. Determines the range of cube coordinates.
  * @param {SVGElement} svgOrigin The SVG element to which polygons will be appended. Represents the origin of the grid.
  * @param {Layout} layout Layout object containing size, origin and orientation data.
- * @param {SvgConfigs} svgConfig Configuration for SVG styling, including fill color, stroke color, stroke width, and stroke dash style.
+ * @param {SvgConfigs} svgConfig Configuration for SVG styling, including fill colour, stroke colour, stroke width, and stroke dash style.
  */
 function generateHexGridWithSVG(gridType, gridSize, svgOrigin, layout, svgConfig, classConfig){
     hexMap = gridType(gridSize, layout.orientation);
@@ -554,7 +559,15 @@ function handlePolygonClick(polygon){
 }
 
 
-
+/**
+ * Generates SVG configuration settings in the form of SvgConfigs class, based on input values.
+ * 
+ * @param {string} svgFillColInput - The ID of the input element for the SVG fill colour.
+ * @param {string} svgStrokeColInput - The ID of the input element for the SVG stroke colour.
+ * @param {number} svgStrokeWidth - The ID of the input element for the SVG stroke width.
+ * @param {string} svgStrokeDash - The ID of the input element for the SVG stroke dash.
+ * @returns {SvgConfigs} An object containing SVG configuration settings.
+ */
 function generateSvgConfigs(svgFillColInput, svgStrokeColInput, svgStrokeWidth, svgStrokeDash){
     const fillColour = document.getElementById(svgFillColInput).value;
     const strokeColour = document.getElementById(svgStrokeColInput).value;
@@ -564,7 +577,16 @@ function generateSvgConfigs(svgFillColInput, svgStrokeColInput, svgStrokeWidth, 
     return new SvgConfigs(fillColour, strokeColour, strokeWidth, strokeDash);
 }
 
-function generateSVG(widthInput, heightInput, containerID) {
+/**
+ * Generates an empty SVG within a specified HTML element and returns the center point and container ID.
+ * If an SVG container already exists within the specified HTML element, it is removed before creating a new one.
+ *
+ * @param {string} widthInput - The ID of the HTML input element containing the desired width of the SVG container.
+ * @param {string} heightInput - The ID of the HTML input element containing the desired height of the SVG container.
+ * @param {string} containerID - The ID of the HTML element where the SVG container will be created.
+ * @returns {Object} An object containing the center point coordinates and the ID of the SVG container.
+ */
+function generateEmptySVG(widthInput, heightInput, containerID) {
     const svgDiv = document.getElementById(containerID);
     let existingSVG = svgDiv.querySelector('svg');
 
@@ -580,14 +602,22 @@ function generateSVG(widthInput, heightInput, containerID) {
     newSVG.setAttribute('height', svgSizeHeight);
     svgDiv.appendChild(newSVG);
 
-    // return new Point(svgSizeWidth / 2, svgSizeHeight / 2)
-
     const centerPoint = new Point(svgSizeWidth / 2, svgSizeHeight / 2);
 
     return { point: centerPoint, id: containerID };
 }
 
-function generateGrid(containerInfo, gridTypeInput, layoutInput, gridSizeInput, cellSizeInput) {
+/**
+ * Generates a grid within an empty premade SVG based on specified parameters.
+ *
+ * @param {Object} containerInfo - Information about the SVG container, including its center point and ID.
+ * @param {string} gridTypeInput - The ID of the HTML input element containing the type of grid to generate ('hexagon' or 'triangle').
+ * @param {string} layoutInput - The ID of the HTML input element containing the layout type ('flat' or specific triangle orientation).
+ * @param {string} gridSizeInput - The ID of the HTML input element containing the size of the grid.
+ * @param {string} cellSizeInput - The ID of the HTML input element containing the size of each grid cell.
+ * @param {SvgConfigs} svgConfig - Configuration for styling the SVG grid.
+ */
+function gridGenerator(containerInfo, gridTypeInput, layoutInput, gridSizeInput, cellSizeInput, svgConfig) {
     const gridType = document.getElementById(gridTypeInput).value;
     const layoutType = document.getElementById(layoutInput).value;
     const gridSize = parseInt(document.getElementById(gridSizeInput).value);
@@ -599,7 +629,7 @@ function generateGrid(containerInfo, gridTypeInput, layoutInput, gridSizeInput, 
 
     if (gridType === 'hexagon') {
         orientation = layoutType === 'flat' ? hexFlatLayout : hexPointyLayout;
-        generateHexGridWithSVG(generateHexagonGrid, gridSize, firstSVG, new Layout(orientation, new Point(parseInt(cellSize), parseInt(cellSize)), containerInfo.point));
+        generateHexGridWithSVG(generateHexagonGrid, gridSize, firstSVG, new Layout(orientation, new Point(parseInt(cellSize), parseInt(cellSize)), containerInfo.point), svgConfig);
     } else if (gridType === 'triangle'){
         if (layoutType === 'left') {
             orientation = triangleLeft;
@@ -610,33 +640,42 @@ function generateGrid(containerInfo, gridTypeInput, layoutInput, gridSizeInput, 
         } else if (layoutType === 'down'){
             orientation = triangleDown;
         }
-        generateHexGridWithSVG(generateTriangleGrid, gridSize, firstSVG, new Layout(orientation, new Point(parseInt(cellSize), parseInt(cellSize)), containerInfo.point));
+        generateHexGridWithSVG(generateTriangleGrid, gridSize, firstSVG, new Layout(orientation, new Point(parseInt(cellSize), parseInt(cellSize)), containerInfo.point), svgConfig);
     }
 }
 
-function updateLayoutSelect() {
-    const gridType = document.getElementById('gridTypeSelect').value;
-    const layoutSelect = document.getElementById('layoutSelect');
-    layoutSelect.innerHTML = '';
+/**
+ * Updates the options of a layout selection based on the selected grid type.
+ *
+ * @param {string} gridTypeSelect - The ID of the grid type select element.
+ * @param {string} layoutSelect - The ID of the layout select element to be updated.
+ */
+function updateLayoutSelect(gridTypeSelect, layoutSelect) {
+    const gridTypeSelected = document.getElementById(gridTypeSelect).value;
+    const layoutSelected = document.getElementById(layoutSelect);
+    layoutSelected.innerHTML = '';
     
-    if (gridType === 'hexagon') {
-        layoutSelect.innerHTML += '<option value="flat">Flat Top</option>';
-        layoutSelect.innerHTML += '<option value="pointy">Pointy Top</option>';
-    } else if (gridType === 'triangle') {
-        layoutSelect.innerHTML += '<option value="left">Triangle Left</option>';
-        layoutSelect.innerHTML += '<option value="right">Triangle Right</option>';
-        layoutSelect.innerHTML += '<option value="up">Triangle Up</option>';
-        layoutSelect.innerHTML += '<option value="down">Triangle Down</option>';
+    if (gridTypeSelected === 'hexagon') {
+        layoutSelected.innerHTML += '<option value="flat">Flat Top</option>';
+        layoutSelected.innerHTML += '<option value="pointy">Pointy Top</option>';
+    } else if (gridTypeSelected === 'triangle') {
+        layoutSelected.innerHTML += '<option value="left">Triangle Left</option>';
+        layoutSelected.innerHTML += '<option value="right">Triangle Right</option>';
+        layoutSelected.innerHTML += '<option value="up">Triangle Up</option>';
+        layoutSelected.innerHTML += '<option value="down">Triangle Down</option>';
     }
 }
 
-document.getElementById('gridTypeSelect').addEventListener('change', updateLayoutSelect);
-
-document.getElementById('generateButton').addEventListener('click', function() {
-    svgSizePoint = generateSVG('svgSizeInput', 'svgSizeInput', 'svg_div')
-    generateGrid(svgSizePoint, 'gridTypeSelect', 'layoutSelect', 'gridSizeInput', 'cellSizeInput');
+document.getElementById('gridTypeSelect').addEventListener('change', () => {
+    updateLayoutSelect('gridTypeSelect', 'layoutSelect')
 });
 
-// document.getElementById('svgConfigsBtn').addEventListener('click', function() {
-//     generateSvgConfigs('svgFillColourInput', 'svgStrokeColourInput', 'svgStrokeWidthInput', 'svgStrokeDashInput');
-// });
+
+document.getElementById('generateButton').addEventListener('click', () => {
+    svgSizePoint = generateEmptySVG('svgSizeInput', 'svgSizeInput', 'svg_div')
+    svgConfigs = generateSvgConfigs('svgFillColourInput', 'svgStrokeColourInput', 'svgStrokeWidthInput', 'svgStrokeDashInput')
+    gridGenerator(svgSizePoint, 'gridTypeSelect', 'layoutSelect', 'gridSizeInput', 'cellSizeInput', svgConfigs);
+});
+
+
+

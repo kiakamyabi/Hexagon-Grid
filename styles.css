@@ -1,29 +1,60 @@
+#test_container {
+    display: flex;
+    flex-direction: row;
+    font-size: 16px;
+    font-family: Arial, sans-serif;
+}
 #svg_configs_div {
     display: flex;
     border: 1px black solid;
     padding: 5px;
     margin: 5px;
     flex-direction: column;
-    font-family: Arial, sans-serif;
+    justify-content: space-evenly;
 }
 #svg_configs_div > div {
+    display: flex;
+    justify-content: space-between;
     margin-bottom: 10px; 
 }
+#svg_configs_div > div > *{
+}
+
+#svg_configs_div > div > label {
+
+}
+#svg_configs_div > div > input{
+    width: 40%;
+}
+
+
 #grid_configs_div {
     display: flex;
     border: 1px black solid;
     padding: 5px;
     margin: 5px;
     flex-direction: column;
-    font-family: Arial, sans-serif;
+    justify-content: space-evenly;
 }
 #grid_configs_div > div {
+    display: flex;
+    justify-content: space-between;
     margin-bottom: 10px; 
 }
 
-.distance-0 {
-    fill: white;
+#grid_configs_div > div > input, select {
+    width: 40%;
 }
+
+#svg_div > svg{
+    border: 1px black solid;
+}
+
+
+.distance-0 {
+    fill: red;
+}
+/*
 .distance-1 {
     fill: #ff0000; 
 }
@@ -65,4 +96,4 @@
 }
 .distance-6:hover {
     fill: #660066;
-}
+} */

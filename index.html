@@ -9,59 +9,62 @@
 </head>
 <body>
     <button id="generateButton">Generate Grid</button>
-    
-    <div id="grid_configs_div">
+
+
+    <div id="test_container">
         <!-- Grid Generation Configs -->
-        <div>
-            <label for="gridTypeSelect">Grid Type:</label>
-            <select id="gridTypeSelect">
-                <option value="hexagon">Hexagon Grid</option>
-                <option value="triangle">Triangle Grid</option>
-            </select>
+        <div id="grid_configs_div">
+            <div>
+                <label for="gridTypeSelect">Grid Type:</label>
+                <select id="gridTypeSelect">
+                    <option value="hexagon">Hexagon Grid</option>
+                    <option value="triangle">Triangle Grid</option>
+                </select>
+            </div>
+            <div>
+                <label for="layoutSelect">Layout Type:</label>
+                <select id="layoutSelect">
+                    <option value="flat">Flat Top</option>
+                    <option value="pointy">Pointy Top</option>
+                </select>
+            </div>
+            <div>
+                <label for="gridSizeInput">Grid Size:</label>
+                <input type="number" min="0" value="6" id="gridSizeInput">
+            </div>
+            <div>
+                <label for="cellSizeInput">Cell Size (X & Y):</label>
+                <input type="number" min="0" value="10" id="cellSizeInput">
+            </div>
+            <div>
+                <label for="svgSizeInput">SVG Width & Height:</label>
+                <input type="number" min="0" value="500" id="svgSizeInput">
+            </div>
         </div>
-        <div>
-            <label for="layoutSelect">Layout Type:</label>
-            <select id="layoutSelect">
-                <option value="flat">Flat Top</option>
-                <option value="pointy">Pointy Top</option>
-            </select>
-        </div>
-        <div>
-            <label for="gridSizeInput">Grid Size:</label>
-            <input type="number" min="0" value="6" id="gridSizeInput">
-        </div>
-        <div>
-            <label for="cellSizeInput">Cell Size (X & Y):</label>
-            <input type="number" min="0" value="10" id="cellSizeInput">
-        </div>
-        <div>
-            <label for="svgSizeInput">SVG Width & Height:</label>
-            <input type="number" min="0" value="500" id="svgSizeInput">
-        </div>
-    </div>
-    <!-- SVG Configs -->
-    <div id="svg_configs_div">
-        <div>
-            <label for="svgFillColourInput">SVG Fill Colour:</label>
-            <input type="color" value="#FFFFFF" id="svgFillColourInput">
-        </div>
-        <div>
-            <label for="svgStrokeColourInput">SVG Stroke Colour:</label>
-            <input type="color" id="svgStrokeColourInput">
-        </div>
-        <div>
-            <label for="svgStrokeWidthInput">SVG Stroke Width:</label>
-            <input type="number" value="1" id="svgStrokeWidthInput">
-        </div>
-        <div>
-            <label for="svgStrokeDashInput">SVG Stroke Dasharray:</label>
-            <input type="text" value="0" id="svgStrokeDashInput">
+        <!-- SVG Configs -->
+        <div id="svg_configs_div">
+            <div>
+                <label for="svgFillColourInput">SVG Fill Colour:</label>
+                <input type="color" value="#FFFFFF" id="svgFillColourInput">
+            </div>
+            <div>
+                <label for="svgStrokeColourInput">SVG Stroke Colour:</label>
+                <input type="color" id="svgStrokeColourInput">
+            </div>
+            <div>
+                <label for="svgStrokeWidthInput">SVG Stroke Width:</label>
+                <input type="number" value="1" id="svgStrokeWidthInput">
+            </div>
+            <div>
+                <label for="svgStrokeDashInput">SVG Stroke Dasharray:</label>
+                <input type="text" value="0" id="svgStrokeDashInput">
+            </div>
         </div>
 
     </div>
-
     <div id="svg_div">
-
+    
     </div>
+    
 </body>
 </html>
