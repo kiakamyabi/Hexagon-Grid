@@ -3,7 +3,7 @@ Work in progress. <br>
 Allows dynamic creation of hexagon cell grids in different shapes and configurations. <br>
 Comes with functions to create a grid generator that shows configuration changes in real time. <br>
 
-## Grid Shapes
+## Grid Shapes Available
 ### Hexagon Shape
 - Flat top grid (hexFlatLayout)
     <details>
@@ -19,12 +19,12 @@ Comes with functions to create a grid generator that shows configuration changes
 - Pointing Up (triangleUp)
   <details>
   <summary>Example</summary>
-    <img width="200" src="images/triangle_down_example.png" alt="Evenly sized cells grid example."> <br>
+    <img width="200" src="images/triangle_up_example.png" alt="Evenly sized cells grid example."> <br>
   </details>
 - Pointing Down (triangleDown)
     <details>
     <summary>Example</summary>
-    <img width="200" src="images/triangle_up_example.png" alt="Evenly sized cells grid example."> <br>
+    <img width="200" src="images/triangle_down_example.png" alt="Evenly sized cells grid example."> <br>
   </details>
 - Pointing Left (triangleLeft)
     <details>
@@ -38,10 +38,9 @@ Comes with functions to create a grid generator that shows configuration changes
   </details>
 
 
-## How to create grid (without visual render)
+## How to create a grid (without visual render)
 
-### Grid Creation
-#### Step 1: Decide what grid type you want.
+### Step 1: Decide what grid type you want.
 This will be the overall shape of the grid that your hexagon cells form. <br>
 Keep in mind which type you want, it will be used later. <br>
 <details>
@@ -63,7 +62,7 @@ Keep in mind which type you want, it will be used later. <br>
 _______
 
 
-#### Step 2: Decide what orientation you want your grid to be.
+### Step 2: Decide what orientation you want your grid to be.
 This will be the overall orientation of the cells and which direction the individual cells point towards. <br>
 The information is kept in already created Orientation class objects, though you can make your own.
 Keep in mind which orienation you want, it will be used later. <br>
@@ -126,7 +125,7 @@ class Orientation {
 
 _______ 
 
-#### Step 3: Decide what cell size you want.
+### Step 3: Decide what cell size you want.
 This will be the total size of the individual cells that make up the grid by choosing the width (x) and height (y). <br>
 They can be uneven. <br>
 The information is kept in a Point class object. <br>
@@ -170,7 +169,7 @@ exampleCell = new Point(20, 10)
 
 _______ 
 
-#### Step 4: Decide where the origin point of the grid will be. <br>
+### Step 4: Decide where the origin point of the grid will be. <br>
 This is the location of where the first cell is created and therefore the origin point of the grid. <br>
 Typically this is the centre of the created grid but not for all grid types. <br>
 Look at the examples to check how that might change where you want to place your origin point. <br>
@@ -237,18 +236,20 @@ _______
 
 
 SVG (500 x 500) / Origin Point (250 x 180) <br>
-<img width="200" src="images/triangle_down_origin_example.png" alt="Centred triangle shaped grid with red origin point as an example.">
+<img width="200" src="images/triangle_down_origin_centred_example.png" alt="Centred triangle shaped grid with red origin point as an example.">
 
 </details>
 
 _______ 
 
-#### Step 5: Aggregate orientation, cell size and origin point for future use <br>
-Now aggregate the orientation, cell size and origin point in a Layout class object.
+### Step 5: Aggregate orientation, cell size and origin point for future use <br>
+Now aggregate the orientation, cell size and origin point in a Layout class object. <br>
+The Layout class object is just used to store data for convenience. <br>
 
 
 
 <details>
+<summary>Examples & Usage</summary>
 
 ```javascript
 class Layout {
@@ -269,7 +270,7 @@ const exampleLayout = new Layout(hexFlatLayout, size, origin)
 
 Now take the Point class object variable which represents the cell size that you created in Step 3, or create one in the exampleLayout variable.<br>
 
-IF we use the example variable created in Step 3, which looks like this: <br>
+IF we use the example variable created in Step 3, which looked like this: <br>
 
 ```javascript
 const exampleCell = new Point(10, 10)
@@ -289,13 +290,15 @@ const exampleLayout = new Layout(hexFlatLayout, new Point(10, 10), origin)
 
 Continuing on with the assumption that exampleCell was used. <br>
 
-Now take the Point class object variable which represents the origin point that you created in Step 4, or create one in the exampleLayout variable. <br>
+Take the Point class object variable which represents the origin point that you created in Step 4, or create one in the exampleLayout variable. <br>
+
+IF we use the example variable created in Step 4, which looked like this: <br>
 
 ```javascript
 const exampleOriginPoint = new Point(250, 250)
 ```
 
-IF we use the example variable created in Step 4, which looks like this: <br> 
+Then it would look like this: <br>
 
 ```javascript
 const exampleLayout = new Layout(hexFlatLayout, exampleCell, exampleOriginPoint)
@@ -304,7 +307,7 @@ const exampleLayout = new Layout(hexFlatLayout, exampleCell, exampleOriginPoint)
 Congratulations, you now have your layout. <br>
 </details>
 
-
+_______ 
 
 ### Step 6 : Grid Creation
 Now create the grid, we can add visual rendering later. <br>
@@ -316,11 +319,6 @@ The value contains:
 <li>An object called 'distance' that tracks the origin point from that individual cell. <br>
 </ol>
 
-<details>
-<summary>Example Snippet of Map object</summary>
-<img width="200" src="images/grid_key_value_example.png" alt="Example snippet of Map object with key value pairs.">
-</details>
-
 Creating a grid is simple. <br>
 
 For the hexagon shaped grids you need to input one parameter.
@@ -329,6 +327,12 @@ For the hexagon shaped grids you need to input one parameter.
 </ol>
 
 Each 1 point of size represents one ring of cells around the origin point. <br>
+
+<details>
+<summary>Example Snippet of Map object</summary>
+<img width="200" src="images/grid_key_value_example.png" alt="Example snippet of Map object with key value pairs.">
+</details>
+
 
 <details>
 <summary>Hexagon Shape Example</summary>
@@ -396,7 +400,7 @@ Only accepts the four pre-made Orientation class objects.
 </ul>
 
 <details>
-<summary>Triangle Shape Example</summary>
+<summary>Examples & Usage</summary>
 
 In this example the grid would have 2 rings around the origin point and point left. <br>
 This is putting the Orientation object class directly.
@@ -468,11 +472,11 @@ function generateTriangleGrid(gridSize, orientation){
 ```
 
 </details>
-
+</details>
 </details>
 
 
-## Quick how to use (with SVG)
+## Quick how to use (with SVG) (Not updated this part of the readme)
 With this function, a hexagon grid will be created at in an SVG element. <br>
 
 gridType = Shape of hexagon grid generated. Currently supports triangle shaped grid and hexagon shaped grid. <br>
