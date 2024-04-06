@@ -8,33 +8,33 @@ Comes with functions to create a grid generator that shows configuration changes
 - Flat top grid (hexFlatLayout)
     <details>
     <summary>Example</summary>
-    <img width="200" src="flat_example" alt="Flat top grid example."> <br>
+    <img width="200" src="images/flat_example.png" alt="Flat top grid example."> <br>
   </details>
 - Pointy top grid (hexPointyLayout)
     <details>
     <summary>Example</summary>
-    <img width="200" src="pointy_example" alt="Pointy top grid example."> <br>
+    <img width="200" src="images/pointy_example.png" alt="Pointy top grid example."> <br>
   </details>
 ### Triangle Shape
 - Pointing Up (triangleUp)
   <details>
   <summary>Example</summary>
-    <img width="200" src="triangle_down_example" alt="Evenly sized cells grid example."> <br>
+    <img width="200" src="images/triangle_down_example.png" alt="Evenly sized cells grid example."> <br>
   </details>
 - Pointing Down (triangleDown)
     <details>
     <summary>Example</summary>
-    <img width="200" src="triangle_up_example" alt="Evenly sized cells grid example."> <br>
+    <img width="200" src="images/triangle_up_example.png" alt="Evenly sized cells grid example."> <br>
   </details>
 - Pointing Left (triangleLeft)
     <details>
     <summary>Example</summary>
-    <img width="200" src="triangle_left_example" alt="Evenly sized cells grid example."> <br>
+    <img width="200" src="images/triangle_left_example.png" alt="Evenly sized cells grid example."> <br>
   </details>
 - Pointing Right (triangleRight)
     <details>
     <summary>Example</summary>
-    <img width="200" src="triangle_right_example" alt="Evenly sized cells grid example."> <br>
+    <img width="200" src="images/triangle_right_example.png" alt="Evenly sized cells grid example."> <br>
   </details>
 
 
@@ -50,12 +50,12 @@ Keep in mind which type you want, it will be used later. <br>
 <li>Hexagon Shaped Grid
     <details>
     <summary>Example</summary>
-    <img width="200" src="flat_example" alt="Flat top grid example."> <br>
+    <img width="200" src="images/flat_example.png" alt="Flat top grid example."> <br>
   </details>
 <li>Triangle Shaped Grid
     <details>
     <summary>Example</summary>
-    <img width="200" src="triangle_up_example" alt="Flat top grid example."> <br>
+    <img width="200" src="images/triangle_up_example.png" alt="Flat top grid example."> <br>
   </details>
 </ul>
 </details>
@@ -91,12 +91,12 @@ class Orientation {
 <li>Flat top grid (hexFlatLayout)
     <details>
     <summary>Example</summary>
-    <img width="200" src="flat_example" alt="Flat top grid example."> <br>
+    <img width="200" src="images/flat_example.png" alt="Flat top grid example."> <br>
   </details>
 <li>Pointy top grid (hexPointyLayout)
     <details>
     <summary>Example</summary>
-    <img width="200" src="pointy_example" alt="Pointy top grid example."> <br>
+    <img width="200" src="images/pointy_example.png" alt="Pointy top grid example."> <br>
   </details>
 </ul>
 <h4>Triangle Shape</h4>
@@ -104,22 +104,22 @@ class Orientation {
 <li>Pointing Up (triangleUp)
   <details>
   <summary>Example</summary>
-    <img width="200" src="triangle_down_example" alt="Evenly sized cells grid example."> <br>
+    <img width="200" src="images/triangle_down_example.png" alt="Evenly sized cells grid example."> <br>
   </details>
 <li>Pointing Down (triangleDown)
     <details>
     <summary>Example</summary>
-    <img width="200" src="triangle_up_example" alt="Evenly sized cells grid example."> <br>
+    <img width="200" src="images/triangle_up_example.png" alt="Evenly sized cells grid example."> <br>
   </details>
 <li>Pointing Left (triangleLeft)
     <details>
     <summary>Example</summary>
-    <img width="200" src="triangle_left_example" alt="Evenly sized cells grid example."> <br>
+    <img width="200" src="images/triangle_left_example.png" alt="Evenly sized cells grid example."> <br>
   </details>
 <li>Pointing Right (triangleRight)
     <details>
     <summary>Example</summary>
-    <img width="200" src="triangle_right_example" alt="Evenly sized cells grid example."> <br>
+    <img width="200" src="images/triangle_right_example.png" alt="Evenly sized cells grid example."> <br>
   </details>
 </ul>
 </details>
@@ -154,7 +154,7 @@ Here is an example of creating a cell that is evenly shaped as a variable. <br>
 const exampleCell = new Point(10, 10)
 ```
 
-<img width="200" src="flat_example" alt="Evenly sized cells grid example.">
+<img width="200" src="images/flat_example.png" alt="Evenly sized cells grid example.">
 
 _______ 
    
@@ -164,7 +164,7 @@ Here is an example of creating a cell that is unevenly shaped as a variable. <br
 exampleCell = new Point(20, 10)
 ```
 
-<img width="200" src="uneven_cell_example" alt="Unevenly sized cell grid example.">
+<img width="200" src="images/uneven_cell_example.png" alt="Unevenly sized cell grid example.">
 
 </details>
 
@@ -202,7 +202,7 @@ const exampleOriginPoint = new Point(250, 250)
 ```
 
 Hexagon Shaped Grid (SVG (500 x 500) / Origin Point (250 x 250))<br>
-<img width="200" src="flat_origin_example" alt="Hexagon shaped grid with red origin point as an example.">
+<img width="200" src="images/flat_origin_example.png" alt="Hexagon shaped grid with red origin point as an example.">
 
 _______ 
 
@@ -213,7 +213,7 @@ const exampleOriginPoint = new Point(250, 250)
 ```
 
 Triangle Shaped Grid (SVG (500 x 500) / Origin Point (250 x 250))<br>
-<img width="200" src="triangle_down_origin_example" alt="Triangle shaped grid with red origin point as an example.">
+<img width="200" src="images/triangle_down_origin_example.png" alt="Triangle shaped grid with red origin point as an example.">
 
 _______ 
 
@@ -224,20 +224,20 @@ const exampleOriginPoint = new Point(250, 100)
 ```
 
 Hexagon Shaped Grid (SVG (500 x 500) / Origin Point (250 x 100))<br>
-<img width="200" src="flat_origin_left_example" alt="Hexagon shaped grid with red origin point to the left as an example.">
+<img width="200" src="images/flat_origin_left_example.png" alt="Hexagon shaped grid with red origin point to the left as an example.">
 
 </details>
 
 <details>
 <summary>Centring Triangle Grid Example</summary>
 SVG (500 x 500) / Origin Point (250 x 250) <br>
-<img width="200" src="triangle_down_origin_uncentred_example" alt="Uncentred triangle shaped grid with red origin point as an example.">
+<img width="200" src="images/triangle_down_origin_uncentred_example.png" alt="Uncentred triangle shaped grid with red origin point as an example.">
 
 _______ 
 
 
 SVG (500 x 500) / Origin Point (250 x 180) <br>
-<img width="200" src="triangle_down_origin_example" alt="Centred triangle shaped grid with red origin point as an example.">
+<img width="200" src="images/triangle_down_origin_example.png" alt="Centred triangle shaped grid with red origin point as an example.">
 
 </details>
 
@@ -318,7 +318,7 @@ The value contains:
 
 <details>
 <summary>Example Snippet of Map object</summary>
-<img width="200" src="grid_key_value_example" alt="Example snippet of Map object with key value pairs.">
+<img width="200" src="images/grid_key_value_example.png" alt="Example snippet of Map object with key value pairs.">
 </details>
 
 Creating a grid is simple. <br>
@@ -340,7 +340,7 @@ const exampleHexGrid = generateHexagonGrid(2)
 
 Heres how that would look with if you visually render the grid as a 10, 10 cell size grid. <br>
 
-<img width="200" src="two_size_example" alt="Example of size 2 hexagon grid.">
+<img width="200" src="images/two_size_example.png" alt="Example of size 2 hexagon grid.">
 
 <details>
 <summary>Generate Hexagon Grid function</summary>
@@ -413,7 +413,7 @@ const exampleTriGrid = generateTriangleGrid(2, exampleLayout.orientation)
 
 Heres how that would look with if you visually render the left pointing grid as a 10, 10 cell size grid. <br>
 
-<img width="200" src="two_size_tri_left_example" alt="Example of left pointing size 2 triangle grid.">
+<img width="200" src="images/two_size_tri_left_example.png" alt="Example of left pointing size 2 triangle grid.">
 
 Another example for a grid with 3 rings around the origin point and pointing downwards. <br>
 
@@ -423,7 +423,7 @@ const exampleTriGrid = generateTriangleGrid(3, triangleDown)
 
 Heres how that would look with if you visually render the downward pointing grid as a 10, 10 cell size grid. <br>
 
-<img width="200" src="two_size_tri_left_example" alt="Example of left pointing size 2 triangle grid.">
+<img width="200" src="images/two_size_tri_left_example.png" alt="Example of left pointing size 2 triangle grid.">
 
 <details>
 <summary>Generate Triangle Grid function</summary>
