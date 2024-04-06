@@ -104,22 +104,22 @@ class Orientation {
 <li>Pointing Up (triangleUp)
   <details>
   <summary>Example</summary>
-    <img width="200" src="images/triangle_down_example.png" alt="Evenly sized cells grid example."> <br>
+    <img width="200" src="images/triangle_up_example.png" alt="Triangle grid pointing up example."> <br>
   </details>
 <li>Pointing Down (triangleDown)
     <details>
     <summary>Example</summary>
-    <img width="200" src="images/triangle_up_example.png" alt="Evenly sized cells grid example."> <br>
+    <img width="200" src="images/triangle_down_example.png" alt="Triangle grid pointing down example."> <br>
   </details>
 <li>Pointing Left (triangleLeft)
     <details>
     <summary>Example</summary>
-    <img width="200" src="images/triangle_left_example.png" alt="Evenly sized cells grid example."> <br>
+    <img width="200" src="images/triangle_left_example.png" alt="Triangle grid pointing left example."> <br>
   </details>
 <li>Pointing Right (triangleRight)
     <details>
     <summary>Example</summary>
-    <img width="200" src="images/triangle_right_example.png" alt="Evenly sized cells grid example."> <br>
+    <img width="200" src="images/triangle_right_example.png" alt="Triangle grid pointing right example."> <br>
   </details>
 </ul>
 </details>
